@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  9 15:00:27 2019
-
-@author: YXY3512
-"""
-
 
 import pandas as pd
 import numpy as np
@@ -35,28 +28,17 @@ class MyDataset(dataset.DatasetAutoFolds):
 
 
 #rescale the rating
-df_util = np.load("C:/Projects/RX_Campaign/data/df_util.npy")
-df_util =pd.DataFrame(df_util, columns=['sdr_person_id','campaign_cd', 'channel', 'score', 'camp_channel'])
-df_util= df_util[df_util['channel'] != 'inbound call']
-
-df = df_util[['sdr_person_id','camp_channel' ,'score']]
-df.columns = ['userID','itemID','rating']
-
-#use sub sample for parameter tuning 
-df2 = df.iloc[0:2000000]
-df2['rating'] = df2['rating'].apply(lambda x: x*10)
+df = np.load(".npy")
+df =pd.DataFrame(df_util, columns= ['userID','itemID','rating'])
 
 reader = Reader(line_format='user item rating', rating_scale=(0.0, 10.0))
 data = MyDataset(df, reader)
-
 
 #grid search to tune parameters 
 from surprise.model_selection import GridSearchCV
 
 param_grid = { 'n_factors':[3, 5, 8, 10, 11], 'n_epochs': [1, 3, 5], 'lr_all': [0.002, .001, 0.01, .005, .0001], 
                'reg_all': [0.2, .02, .002, .001]}
-
-
 
 gs = GridSearchCV(SVD, param_grid, measures=['rmse', 'mae'], cv=5)
 
@@ -73,12 +55,11 @@ print(gs.best_params['rmse'])
 
 
 #baseline
-#np.sqrt(np.mean( np.square(df2['rating'] -df2['rating'].mean() )))
+#np.sqrt(np.mean( np.square(df['rating'] -df['rating'].mean() )))
 
 algo =  SVD(n_factors = 5, n_epochs = 5, lr_all = 0.005, reg_all = 0.002)
 data.split(n_folds=5)
 evaluate(algo, data)
-
 
 
 ###############################################################################
@@ -140,7 +121,7 @@ for uid, user_ratings in top_n_svd.items():
     print(uid, [iid for (iid, _) in user_ratings])
 
 #
-pred_svd = open('C:\Projects\RX_Campaign\output\pred_svd.pkl', 'wb')
+pred_svd = open('pred_svd.pkl', 'wb')
 pickle.dump(top_n_svd, pred_svd)
 pred_svd.close()
 
@@ -155,11 +136,11 @@ pkl_file.close()
 NMF
 """
 
-df2['rating'] = df2['rating'].apply(lambda x: x *0.9 + 1)
-df2['rating'].describe()
+df['rating'] = df['rating'].apply(lambda x: x *0.9 + 1)
+df['rating'].describe()
+
 #baseline
-np.sqrt(np.mean( np.square(df2['rating'] -df2['rating'].mean() )))
-# 2.3372975785446433
+np.sqrt(np.mean( np.square(df['rating'] -df['rating'].mean() )))
 
 reader = Reader(line_format='user item rating', rating_scale=(0, 10.0))
 data = MyDataset(df2, reader)
@@ -200,29 +181,11 @@ for uid, user_ratings in top_n_svd.items():
     print(uid, [iid for (iid, _) in user_ratings])
 
 
-algo.predict(1000009409, 'col_la_score_avg', r_ui=1, verbose=True)
-
+#algo.predict(id, item, r_ui=1, verbose=True)
 
 data.split(n_folds=5)
 evaluate(algo, data, measures=['RMSE'])
 
-"""
-model evaluation 
-"""
-
-#use sub sample for parameter tuning 
-df3 = df.iloc[0:1000000]
-df3['rating'] = df3['rating'].apply(lambda x: x*10)
-
-df3 = df3.drop('rating_scale', axis = 1)
-
-reader = Reader(line_format='user item rating', rating_scale=(0.0, 10.0))
-data = MyDataset(df3, reader)
-
-trainset = data.build_full_trainset()
-algo = SVD(n_factors = 5, n_epochs = 5, lr_all = 0.005, reg_all = 0.002)
-algo.fit(trainset)
-algo.pu
 
 
 ""
@@ -231,8 +194,8 @@ score = cross_validate(algo, data, measures=['RMSE', 'MAE'], cv=3, verbose=False
 scoredf = pd.DataFrame(score)
 mean_score = scoredf.mean()
 
- 
-"
+
+"""
 SVD++
 """
 
@@ -256,4 +219,4 @@ top_n_svd = get_top_n(predictions, n=5, threshold = 2.5)
 for uid, user_ratings in top_n_svd.items():
     print(uid, [iid for (iid, _) in user_ratings])
 
-top_n_svd['1088871149']
+top_n_svd['id0']

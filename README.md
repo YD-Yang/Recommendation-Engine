@@ -3,9 +3,13 @@
 ## A. “Traditional” Methods
 ### 1. Collaborative Filtering
 Nearest-neighbors
-Matrix Factorization
+
+Matrix Factorization 
+
 Restricted Boltzmann Machines
+
 Clustering and LSH
+
 Association Rules
 
 

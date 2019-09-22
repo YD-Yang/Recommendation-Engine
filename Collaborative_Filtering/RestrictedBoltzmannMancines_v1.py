@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Nov 19 16:09:36 2018
-
-@author: YXY3512
+from
 https://github.com/ShaunZia/MovieRec-CollabFilt-RBM/blob/master/MovieRec-CollabFilt-RBM.ipynb
 """
 
@@ -11,16 +9,16 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split 
+
 ################
 
-df2 = pd.read_csv("U:/Projects/Recomendation Egngine/HEDIS/raw data/mbr_channel_python.csv")
-#df2 = df2.set_index('sdr_person_id')
-df2.columns = [x.lower() for x in df2.columns]
-c=list(df2.columns.values)
+df = pd.read_csv(".csv")
+#df = df.set_index('sdr_person_id')
+
 
 from collections import OrderedDict
 
-df = df2.set_index('sdr_person_id')
+df = df.set_index('id')
 
 df = df.unstack().swaplevel().to_frame().reset_index()
 df.columns = ['userID', 'itemID', 'rating']
@@ -34,7 +32,7 @@ test_df = df[df['userID'].isin( user_test)]
 
 """
 
-item_feature = pd.read_csv("U:/Projects/Recomendation Egngine/HEDIS/raw data/channel_test.csv")
+item_feature = pd.read_csv(".csv")
 item_feature['list_index'] = item_feature.index
 
 merge_df = item_feature.merge(df, on = 'itemID')

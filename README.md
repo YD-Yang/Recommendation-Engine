@@ -15,6 +15,7 @@ Association Rules
 
 ### 2. Content-based Recommendations
 TF-IDF
+
 Classifiers (e.g. ANN or Naive Bayes)
 
 
@@ -23,6 +24,7 @@ Classifiers (e.g. ANN or Naive Bayes)
 LambdaMart...
 ### 2. Context-aware Recommendations
 Tensor Factorization
+
 Factorization Machines
 ### 3. Deep Learning
 ### 4. Similarity-based recommendations
